@@ -1,0 +1,1 @@
+ C:\\Users\\Anwarsayuthi\\Documents\\pama\ project\ 2\\blood_donation\\.dart_tool\\flutter_build\\8554aa9b1fd736a0a55fe0d8ce25b4e5\\native_assets.yaml: 

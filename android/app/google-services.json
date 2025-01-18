@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "72467927642",
+    "project_id": "com-pama-g2",
+    "storage_bucket": "com-pama-g2.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:72467927642:android:4422bf627dbb7f8dae3e63",
+        "android_client_info": {
+          "package_name": "com.example.blood_donation"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAJR0bywv-kqLdk1ueSqpBmyrUhWQNHFF8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
