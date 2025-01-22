@@ -9,7 +9,9 @@ class MyTextField extends StatelessWidget {
     super.key,
     required this.HintText,
     required this.PrefixIcon,
-    required this.Control, required this.obscureText,
+    required this.Control,
+    required this.obscureText,
+    required TextInputType keyboardType,
   });
 
   @override

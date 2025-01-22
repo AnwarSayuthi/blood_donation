@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-
 class MyText extends StatelessWidget {
   // ignore: non_constant_identifier_names
   final String MylableText;
@@ -19,8 +18,8 @@ class MyText extends StatelessWidget {
     return Text(
       MylableText,
       textAlign: TextAlign.center,
-      
-      style: TextStyle(fontSize: FontSize, fontWeight: FontWeight.bold,color: Colors.red),
+      style: TextStyle(
+          fontSize: FontSize, fontWeight: FontWeight.bold, color: Colors.red),
     );
   }
 }
