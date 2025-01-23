@@ -21,7 +21,7 @@ Go to the project directory
 Clean Cache, Packages and All
 
 ```bash
-  flutter Clean
+  flutter clean
 ```
 
 Reinstall the package
