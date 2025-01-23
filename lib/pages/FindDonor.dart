@@ -224,7 +224,6 @@ class _FindDonorPageState extends State<FindDonorPage> {
 
     // Render the main content after loading.
     return Scaffold(
-      appBar: AppBar(title: const Text("Find Donor")),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Form(

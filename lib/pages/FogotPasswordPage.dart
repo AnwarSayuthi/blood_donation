@@ -38,10 +38,6 @@ class ForgotPasswordPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: AppBar(
-        title: Text('Forgot Password'),
-        backgroundColor: Colors.redAccent,
-      ),
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(16.0),
@@ -95,6 +91,7 @@ class ForgotPasswordPage extends StatelessWidget {
                     fontSize: 15,
                     color: Colors.red,
                     decoration: TextDecoration.underline,
+                    decorationColor: Colors.red, // Set underline color
                     decorationThickness: 1.5,
                   ),
                 ),
