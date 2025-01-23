@@ -1,14 +1,48 @@
-# Flutter blood_donation Project Setup
 
-This document provides instructions for setting up and building the Flutter project.
+# Blood Donation FLutter Apps
 
-## Prerequisites
+A mobile application for blood donation, where users can register, donate blood, and view their donation history.
 
-Ensure you have Flutter installed on your machine. You can follow the official Flutter installation guide if you haven't done so already.
 
-## Setup and Build Instructions
+## Please Follow this step to run the project
 
-To clone the repository and build the APK, run the following command in your terminal:
+Clone the project
 
 ```bash
-git clone <repository-url> && cd <project-directory> && flutter clean && flutter pub get && dart run flutter_launcher_icons && flutter build apk --build-name=1.0 --build-number=1
+  git clone https://github.com/AnwarSayuthi/blood_donation.git
+```
+
+Go to the project directory
+
+```bash
+  cd blood_donation
+```
+
+Clean Cache, Packages and All
+
+```bash
+  flutter Clean
+```
+
+Reinstall the package
+
+```bash
+  flutter pub get
+```
+
+Reinstall the package
+
+```bash
+  dart run flutter_launcher_icons:generate
+```
+
+
+
+## Generate APK file
+
+To build apk file
+
+```bash
+  flutter build apk --build-name=1.0 --build-number=1
+```
+
