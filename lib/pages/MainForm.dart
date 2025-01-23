@@ -1,5 +1,4 @@
 import 'package:blood_donation/Content/imagewidget.dart';
-import 'package:blood_donation/pages/Donate.dart';
 import 'package:blood_donation/pages/LoginForm.dart';
 import 'package:blood_donation/pages/UserHomePage.dart'; // Import UserHomePage
 import 'package:blood_donation/pages/RecipientHomePage.dart'; // Import RecipientHomePage
@@ -23,7 +22,6 @@ class MainForm extends StatelessWidget {
             if (snapshot.hasData) {
               // User is signed in
               String email = snapshot.data!.email!;
-              String userId = snapshot.data!.uid; // Retrieve the userId
               return FutureBuilder<String>(
                 future:
                     getUserRoleByEmail(email), // Fetch user role based on email

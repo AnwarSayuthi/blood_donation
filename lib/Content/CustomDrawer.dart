@@ -24,10 +24,6 @@ class CustomDrawer extends StatelessWidget {
     return FutureBuilder<Map<String, dynamic>>(
       future: getUserDetails(userId),
       builder: (context, snapshot) {
-        // if (snapshot.connectionState == ConnectionState.waiting) {
-        //   return const Center(child: CircularProgressIndicator());
-        // }
-
         if (!snapshot.hasData || snapshot.data == null) {
           return const Center(child: Text(""));
         }
@@ -62,9 +58,8 @@ class CustomDrawer extends StatelessWidget {
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
                       ),
-                      maxLines: 1, // Restrict to one line
-                      overflow: TextOverflow
-                          .ellipsis, // Add "..." if text is too long
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
                     ),
                     Text(
                       email,
@@ -77,46 +72,52 @@ class CustomDrawer extends StatelessWidget {
                 ),
               ),
               ListTile(
+                leading: const Icon(Icons.home, color: Colors.red),
                 title: const Text("Home"),
                 onTap: () {
-                  onPageSelected(0); // Switch to Home page
-                  Navigator.pop(context); // Close the drawer
+                  onPageSelected(0);
+                  Navigator.pop(context);
                 },
               ),
               ListTile(
+                leading: const Icon(Icons.person, color: Colors.red),
                 title: const Text("Profile"),
                 onTap: () {
-                  onPageSelected(1); // Switch to Profile page
-                  Navigator.pop(context); // Close the drawer
+                  onPageSelected(1);
+                  Navigator.pop(context);
                 },
               ),
               if (role == "user")
                 ListTile(
+                  leading: const Icon(Icons.emoji_events, color: Colors.red),
                   title: const Text("Achievement"),
                   onTap: () {
-                    onPageSelected(2); // Switch to Achievement page
-                    Navigator.pop(context); // Close the drawer
+                    onPageSelected(2);
+                    Navigator.pop(context);
                   },
                 ),
               if (role == "recipient")
                 ListTile(
+                  leading: const Icon(Icons.search, color: Colors.red),
                   title: const Text("Find Donor"),
                   onTap: () {
-                    onPageSelected(2); // Switch to Find Donor page
-                    Navigator.pop(context); // Close the drawer
+                    onPageSelected(2);
+                    Navigator.pop(context);
                   },
                 ),
               ListTile(
+                leading: const Icon(Icons.logout, color: Colors.red),
                 title: const Text("Logout"),
                 onTap: () async {
                   try {
-                    // Perform logout by signing out of Firebase
                     await FirebaseAuth.instance.signOut();
                     ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(content: Text("Successfully Logout")),
                     );
-                    Navigator.push(context,
-                        MaterialPageRoute(builder: (context) => LoginForm()));
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(builder: (context) => LoginForm()),
+                    );
                   } catch (e) {
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(

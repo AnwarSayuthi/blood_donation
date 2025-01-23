@@ -57,12 +57,18 @@ class _HomePageState extends State<HomePage> {
       body: isLoading
           ? Center(child: CircularProgressIndicator())
           : FutureBuilder<QuerySnapshot>(
-              future: FirebaseFirestore.instance
-                  .collection('donates')
-                  .where('donated_by', isNull: true)
-                  .where('bloodType', isEqualTo: userBloodType)
-                  .orderBy('createdAt', descending: true)
-                  .get(),
+              future: userRole == 'user'
+                  ? FirebaseFirestore.instance
+                      .collection('donates')
+                      .where('donated_by', isNull: true)
+                      .where('bloodType', isEqualTo: userBloodType)
+                      .orderBy('createdAt', descending: true)
+                      .get()
+                  : FirebaseFirestore.instance
+                      .collection('donates')
+                      .where('donated_by', isNull: true)
+                      .orderBy('createdAt', descending: true)
+                      .get(),
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   return Center(child: CircularProgressIndicator());
@@ -198,8 +204,15 @@ class _HomePageState extends State<HomePage> {
                                     padding: EdgeInsets.symmetric(
                                         horizontal: 20, vertical: 12),
                                   ),
-                                  icon: Icon(Icons.visibility),
-                                  label: Text('View Details'),
+                                  icon: Icon(
+                                    Icons.visibility,
+                                    color: Colors
+                                        .white, // Set the icon color to white
+                                  ),
+                                  label: Text(
+                                    'View Details',
+                                    style: TextStyle(color: Colors.white),
+                                  ),
                                 ),
                               ],
                             ),

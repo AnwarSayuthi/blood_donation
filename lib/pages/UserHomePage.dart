@@ -1,4 +1,5 @@
 import 'package:blood_donation/Content/CustomDrawer.dart';
+import 'package:blood_donation/pages/AchievmentPage.dart';
 import 'package:blood_donation/pages/FindDonor.dart';
 import 'package:blood_donation/pages/HomePage.dart';
 import 'package:blood_donation/pages/ProfilePage.dart';
@@ -27,12 +28,7 @@ class _UserHomePageState extends State<UserHomePage> {
       case 1:
         return ProfilePage(); // Create a new instance of ProfilePage
       case 2:
-        return Center(
-          child: Text(
-            "Achievement",
-            style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-          ),
-        );
+        return AchievementPage();
       default:
         return const SizedBox.shrink(); // Fallback widget
     }

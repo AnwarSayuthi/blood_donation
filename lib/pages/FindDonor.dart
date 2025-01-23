@@ -21,14 +21,35 @@ class _FindDonorPageState extends State<FindDonorPage> {
   String? _bloodType;
   String? _yearOfBirth;
   List<Map<String, String>> hospitals = [];
-  Map<String, String>? _selectedHospital; // Store the selected hospital details
-  bool _isLoading = true;
+  Map<String, String>? _selectedHospital;
+  bool _isLoading = true; // Initially true to show the loading screen.
 
   @override
   void initState() {
     super.initState();
-    _fetchUserDetails();
-    fetchNearbyHospitals();
+    _loadData();
+  }
+
+  /// Fetches user details and nearby hospitals simultaneously.
+  Future<void> _loadData() async {
+    setState(() {
+      _isLoading = true; // Show loading screen.
+    });
+
+    try {
+      await Future.wait([
+        _fetchUserDetails(),
+        fetchNearbyHospitals(),
+      ]);
+    } catch (e) {
+      print("Error during data loading: $e");
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isLoading = false; // Hide loading screen after all tasks complete.
+        });
+      }
+    }
   }
 
   Future<void> _fetchUserDetails() async {
@@ -46,18 +67,21 @@ class _FindDonorPageState extends State<FindDonorPage> {
 
       if (userSnapshot.docs.isNotEmpty) {
         final userData = userSnapshot.docs.first.data() as Map<String, dynamic>;
-        setState(() {
-          _recipientName = userData['fullName'] ?? "Unknown";
-          _isLoading = false;
-        });
+        if (mounted) {
+          setState(() {
+            _recipientName = userData['fullName'] ?? "Unknown";
+          });
+        }
       } else {
         throw Exception("User document not found");
       }
     } catch (e) {
-      setState(() {
-        _recipientName = "Error fetching user";
-        _isLoading = false;
-      });
+      if (mounted) {
+        setState(() {
+          _recipientName = "Error fetching user";
+        });
+      }
+      print("Error fetching user details: $e");
     }
   }
 
@@ -97,9 +121,6 @@ class _FindDonorPageState extends State<FindDonorPage> {
               });
             }
           }
-
-          // Debug statement to print data for each prompt
-          print("Fetched data for prompt '$prompt': ${data.length} results");
         } else {
           print(
               'Error fetching hospitals for prompt "$prompt": ${response.statusCode}');
@@ -109,28 +130,38 @@ class _FindDonorPageState extends State<FindDonorPage> {
       }
     }
 
-    // Debug statement to print the final collected hospital data
-    print("Final unique hospital data: $uniqueHospitals");
+    // Convert Set to List
+    List<Map<String, String>> hospitalList = uniqueHospitals.toList();
 
-    return uniqueHospitals.toList();
+    // Sort hospitals alphabetically by name
+    hospitalList.sort((a, b) => a['name']!.compareTo(b['name']!));
+
+    return hospitalList;
   }
 
   Future<void> fetchNearbyHospitals() async {
-    const List<String> prompts = ['batu pahat hospitals'];
-
+    const List<String> prompts = [
+      'batu pahat hospitals',
+      // 'Johor Bahru Hospitals',
+      // 'kluang hospitals malaysia',
+      // 'Kota Tinggi Hospitals',
+      // 'Mersing Hospitals',
+      // 'Tangkak Hospitals',
+      // 'Muar Hospitals',
+      // 'Pontian Hospitals',
+      // 'Segamat Hospitals',
+    ];
     try {
       List<Map<String, String>> nearbyHospitals =
           await fetchHospitalsByPrompts(prompts);
 
-      setState(() {
-        hospitals = nearbyHospitals;
-        _isLoading = false;
-      });
+      if (mounted) {
+        setState(() {
+          hospitals = nearbyHospitals;
+        });
+      }
     } catch (e) {
       print("Error fetching hospitals: $e");
-      setState(() {
-        _isLoading = false;
-      });
     }
   }
 
@@ -183,6 +214,7 @@ class _FindDonorPageState extends State<FindDonorPage> {
   @override
   Widget build(BuildContext context) {
     if (_isLoading) {
+      // Show loading screen while data is loading.
       return const Scaffold(
         body: Center(
           child: CircularProgressIndicator(),
@@ -190,7 +222,9 @@ class _FindDonorPageState extends State<FindDonorPage> {
       );
     }
 
+    // Render the main content after loading.
     return Scaffold(
+      appBar: AppBar(title: const Text("Find Donor")),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Form(
@@ -272,38 +306,68 @@ class _FindDonorPageState extends State<FindDonorPage> {
                 }).toList(),
                 onChanged: (value) {
                   setState(() {
-                    _bloodType = value!;
+                    _bloodType = value;
                   });
                 },
+                onSaved: (value) => _bloodType = value,
                 decoration: const InputDecoration(
                   border: OutlineInputBorder(),
                 ),
                 validator: (value) =>
-                    value == null ? "Please select a blood type" : null,
+                    value == null ? "Blood type is required" : null,
               ),
               const SizedBox(height: 16),
+              const Text("Year of Birth",
+                  style: TextStyle(fontWeight: FontWeight.bold)),
               TextFormField(
                 keyboardType: TextInputType.number,
                 decoration: const InputDecoration(
-                  labelText: "Year of Birth",
                   hintText: "Enter your year of birth",
                   border: OutlineInputBorder(),
                 ),
                 onSaved: (value) => _yearOfBirth = value,
-                validator: (value) =>
-                    value!.isEmpty ? "Year of Birth is required" : null,
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return "Year of Birth is required";
+                  }
+                  final year = int.tryParse(value);
+                  if (year == null ||
+                      year < 1900 ||
+                      year > DateTime.now().year) {
+                    return "Enter a valid year";
+                  }
+                  return null;
+                },
               ),
               const SizedBox(height: 16),
+              const Text("Select Hospital",
+                  style: TextStyle(fontWeight: FontWeight.bold)),
               DropdownButtonFormField<Map<String, String>>(
                 isExpanded: true,
-                items: hospitals.map((hospital) {
+                items: hospitals.asMap().entries.map((entry) {
+                  final index = entry.key;
+                  final hospital = entry.value;
+
                   return DropdownMenuItem(
                     value: hospital,
-                    child: Text(
-                      hospital['name']!,
-                      style: const TextStyle(fontWeight: FontWeight.bold),
-                      overflow: TextOverflow.ellipsis,
-                      maxLines: 1,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          hospital['name']!,
+                          style: const TextStyle(fontWeight: FontWeight.bold),
+                          overflow: TextOverflow.ellipsis,
+                          maxLines: 2, // Restrict max lines
+                        ),
+                        if (index !=
+                            hospitals.length -
+                                1) // Add divider unless it's the last item
+                          const Divider(
+                            thickness: 1,
+                            height: 10,
+                            color: Colors.grey,
+                          ),
+                      ],
                     ),
                   );
                 }).toList(),
@@ -313,20 +377,38 @@ class _FindDonorPageState extends State<FindDonorPage> {
                   });
                 },
                 decoration: const InputDecoration(
-                  labelText: "Nearby Hospital",
                   border: OutlineInputBorder(),
                   isDense: true,
                 ),
                 validator: (value) =>
                     value == null ? "Please select a nearby hospital" : null,
+                dropdownColor:
+                    Colors.white, // Optional: Set dropdown background color
+                selectedItemBuilder: (BuildContext context) {
+                  // Customize the selected item display
+                  return hospitals.map((hospital) {
+                    return Text(
+                      hospital['name']!,
+                      style: const TextStyle(
+                        fontWeight: FontWeight.bold,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      maxLines: 1,
+                    );
+                  }).toList();
+                },
+                menuMaxHeight: 300, // Set max height for the dropdown
               ),
-              const SizedBox(height: 16),
+              const SizedBox(height: 20),
               ElevatedButton(
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.red,
                 ),
                 onPressed: _handleSubmit,
-                child: const Text("Send"),
+                child: const Text(
+                  "Send",
+                  style: TextStyle(color: Colors.white),
+                ),
               ),
             ],
           ),
