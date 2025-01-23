@@ -8,7 +8,6 @@ import '../Content/TextfieldWidget.dart';
 import '../Content/buttonWidget.dart';
 import '../Content/imagewidget.dart';
 import '../Content/mytext.dart';
-import 'Dashboard.dart';
 
 class SignUpPage extends StatelessWidget {
   SignUpPage({super.key});
